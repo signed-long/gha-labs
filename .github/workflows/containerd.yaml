@@ -11,40 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: update containerd config file
+        name: ctr-remote pull openpilot
         run: |
-          sudo cat << EOF
-          version = 2
-
-          # Plug stargz snapshotter into containerd
-          [proxy_plugins]
-            [proxy_plugins.stargz]
-              type = "snapshot"
-              address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"
-          EOF >> /etc/containerd/config.toml
-      -
-        name: update docker config file
-        run: |
-          sudo cat << EOF
-          {
-            "features": {
-              "containerd-snapshotter": true
-            },
-            "storage-driver": "stargz"
-          }
-          EOF >> /etc/docker/daemon.json
-      -
-        name: install stargz-snapshotter
-        run: |
-          sudo cat /etc/containerd/config.toml
-          sudo cat /etc/docker/daemon.json
-          sudo apt-get install fuse
-          sudo modprobe fuse
-          sudo wget https://github.com/containerd/stargz-snapshotter/releases/download/v0.15.1/stargz-snapshotter-v0.15.1-linux-amd64.tar.gz
-          sudo tar -C /usr/local/bin -xvf stargz-snapshotter-v0.15.1-linux-amd64.tar.gz containerd-stargz-grpc ctr-remote
-          sudo wget -O /etc/systemd/system/stargz-snapshotter.service https://raw.githubusercontent.com/containerd/stargz-snapshotter/v0.15.1/script/config/etc/systemd/system/stargz-snapshotter.service
-          sudo systemctl enable --now stargz-snapshotter
-          sudo systemctl restart containerd
-          sudo systemctl restart docker
-
-
+          ctr-remote image pull ghcr.io/commaai/openpilot/openpilot-base:latest
