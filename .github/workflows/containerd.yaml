@@ -11,40 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Set up containerd
-        uses: crazy-max/ghaction-setup-containerd@v3
-        with:
-          config-inline: |
-                version = 2
-
-                # - Set default runtime handler to v2, which has a per-pod shim
-                # - Enable to use stargz snapshotter
-                [plugins."io.containerd.grpc.v1.cri".containerd]
-                  default_runtime_name = "runc"
-                  snapshotter = "stargz"
-                  disable_snapshot_annotations = false
-                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-                  runtime_type = "io.containerd.runc.v2"
-
-                # Setup a runtime with the magic name ("test-handler") used for Kubernetes
-                # runtime class tests ...
-                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.test-handler]
-                  runtime_type = "io.containerd.runc.v2"
-
-                # Use stargz snapshotter
-                [proxy_plugins]
-                  [proxy_plugins.stargz]
-                    type = "snapshot"
-                    address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"
-
-      -
-        name: dl stargz and install
+        name: check if containerd is isntalled
         run: |
-          sudo apt-get install fuse
-          sudo modprobe fuse
-
-          sudo wget https://github.com/containerd/stargz-snapshotter/releases/download/v0.15.1/stargz-snapshotter-v0.15.1-linux-amd64.tar.gz
-          sudo tar -C /usr/local/bin -xvf stargz-snapshotter-v0.15.1-linux-amd64.tar.gz containerd-stargz-grpc ctr-remote
-          sudo wget -O /etc/systemd/system/stargz-snapshotter.service https://raw.githubusercontent.com/containerd/stargz-snapshotter/main/script/config/etc/systemd/system/stargz-snapshotter.service
-          sudo systemctl enable --now stargz-snapshotter
-          sudo systemctl restart containerd
+          containerd --version
+          ctr --version
+          sudo cat /etc/containerd/config.toml
