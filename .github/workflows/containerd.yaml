@@ -13,23 +13,35 @@ jobs:
       -
         name: Set up containerd
         uses: crazy-max/ghaction-setup-containerd@v3
-      -
-        name: See config
-        run: |
+        with:
+          config-inline: |
+                version = 2
 
-          sudo cat /etc/containerd/config.toml
-
-          sudo echo '# Enable stargz snapshotter for CRI
+                # - Set default runtime handler to v2, which has a per-pod shim
+                # - Enable to use stargz snapshotter
                 [plugins."io.containerd.grpc.v1.cri".containerd]
+                  default_runtime_name = "runc"
                   snapshotter = "stargz"
                   disable_snapshot_annotations = false
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                  runtime_type = "io.containerd.runc.v2"
 
-                # Plug stargz snapshotter into containerd
+                # Setup a runtime with the magic name ("test-handler") used for Kubernetes
+                # runtime class tests ...
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.test-handler]
+                  runtime_type = "io.containerd.runc.v2"
+
+                # Use stargz snapshotter
                 [proxy_plugins]
                   [proxy_plugins.stargz]
                     type = "snapshot"
-                    address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"' >> /etc/containerd/config.toml
+                    address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"
 
-          sudo cat /etc/containerd/config.toml
+      -
+        name: See config
+        run: |
+          containerd config default > /tmp/containerd-config.toml
+          cat /tmp/containerd-config.toml
+
 
 
