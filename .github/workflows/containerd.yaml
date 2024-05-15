@@ -1,4 +1,3 @@
-# gha workflow file template:
 
 name: containerd
 
@@ -17,6 +16,18 @@ jobs:
       -
         name: See config
         run: |
-          containerd config default > /tmp/containerd-config.toml
-          cat /tmp/containerd-config.toml
-          cat /etc/config.toml
+
+          cat /etc/containerd/config.toml
+
+          echo '# Enable stargz snapshotter for CRI
+                [plugins."io.containerd.grpc.v1.cri".containerd]
+                  snapshotter = "stargz"
+                  disable_snapshot_annotations = false
+
+                # Plug stargz snapshotter into containerd
+                [proxy_plugins]
+                  [proxy_plugins.stargz]
+                    type = "snapshot"
+                    address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"' >> /etc/containerd/config.toml
+
+          cat /etc/containerd/config.toml
