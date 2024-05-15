@@ -17,9 +17,9 @@ jobs:
         name: See config
         run: |
 
-          cat /etc/containerd/config.toml
+          sudo cat /etc/containerd/config.toml
 
-          echo '# Enable stargz snapshotter for CRI
+          sudo echo '# Enable stargz snapshotter for CRI
                 [plugins."io.containerd.grpc.v1.cri".containerd]
                   snapshotter = "stargz"
                   disable_snapshot_annotations = false
@@ -30,4 +30,6 @@ jobs:
                     type = "snapshot"
                     address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"' >> /etc/containerd/config.toml
 
-          cat /etc/containerd/config.toml
+          sudo cat /etc/containerd/config.toml
+
+
