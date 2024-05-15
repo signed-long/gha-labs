@@ -1,0 +1,22 @@
+# gha workflow file template:
+
+name: containerd
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  containerd:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up containerd
+        uses: crazy-max/ghaction-setup-containerd@v3
+      -
+        name: See config
+        run: |
+          containerd config default > /tmp/containerd-config.toml
+          cat /tmp/containerd-config.toml
+          cat /etc/config.toml
