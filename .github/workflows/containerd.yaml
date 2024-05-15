@@ -38,10 +38,16 @@ jobs:
                     address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"
 
       -
-        name: See config
+        name: dl stargz and install
         run: |
-          containerd config default > /tmp/containerd-config.toml
-          cat /tmp/containerd-config.toml
+          apt-get install fuse
+          modprobe fuse
+
+          wget https://github.com/containerd/stargz-snapshotter/releases/download/v0.15.1/stargz-snapshotter-v0.15.1-linux-amd64.tar.gz
+          tar -C /usr/local/bin -xvf stargz-snapshotter-v0.15.1-linux-amd64.tar.gz containerd-stargz-grpc ctr-remote
+          wget -O /etc/systemd/system/stargz-snapshotter.service https://raw.githubusercontent.com/containerd/stargz-snapshotter/main/script/config/etc/systemd/system/stargz-snapshotter.service
+          systemctl enable --now stargz-snapshotter
+          systemctl restart containerd
 
 
 
