@@ -65,6 +65,7 @@ jobs:
       -
         name: build/pull normal image
         run: |
+          ls -a
           docker buildx build --load -t hello-org -f Dockerfile.stargz-org .
           docker run --rm hello-org
 
