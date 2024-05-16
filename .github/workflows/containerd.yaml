@@ -3,7 +3,7 @@ name: containerd
 on:
   push:
     branches:
-      - stargz
+      - main
 
 jobs:
   containerd:
