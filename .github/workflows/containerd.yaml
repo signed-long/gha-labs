@@ -15,6 +15,7 @@ jobs:
 
           containerd --version
           docker --version
+          docker buildx version
           sudo systemctl status containerd
           sudo systemctl status docker
 
