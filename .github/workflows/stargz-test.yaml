@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  stargz-test:
+  containerd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -74,12 +73,13 @@ jobs:
       -
         name: build/pull normal image
         run: |
-          docker buildx build --load -t hello-org -f Dockerfile.stargz_org .
+          docker buildx build --pull -t hello-org -f Dockerfile.stargz_org .
 
       -
         name: build/pull stargz image
         run: |
           docker buildx create --use --name lazy-builder --buildkitd-flags '--oci-worker-snapshotter=stargz'
           docker buildx inspect --bootstrap lazy-builder
-          docker buildx build --load -t hello-esgz -f Dockerfile.stargz_esgz .
+          docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
+
 
