@@ -6,64 +6,63 @@ on:
       - main
 
 jobs:
-  containerd:
+  stargz-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       # Do I need this? https://github.com/containerd/stargz-snapshotter/blob/main/docs/INSTALL.md
-      # -
-      #   name: update containerd config file
-      #   run: |
+      -
+        name: update containerd config file
+        run: |
 
-      #     containerd --version
-      #     docker --version
-      #     docker buildx version
+          containerd --version
+          docker --version
+          docker buildx version
 
-      #     sudo systemctl status containerd
-      #     sudo systemctl status docker
+          sudo systemctl status containerd
+          sudo systemctl status docker
 
-      #     sudo cat /etc/containerd/config.toml
-      #     sudo bash -c 'cat << EOF >> /etc/containerd/config.toml
-      #     version = 2
+          sudo cat /etc/containerd/config.toml
+          sudo bash -c 'cat << EOF >> /etc/containerd/config.toml
+          version = 2
 
-      #     [proxy_plugins]
-      #       [proxy_plugins.stargz]
-      #         type = "snapshot"
-      #         address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"
-      #     EOF'
-      #     sudo cat /etc/containerd/config.toml
+          [proxy_plugins]
+            [proxy_plugins.stargz]
+              type = "snapshot"
+              address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"
+          EOF'
+          sudo cat /etc/containerd/config.toml
 
-      #     sudo cat /etc/docker/daemon.json
-      #     sudo bash -c 'cat << EOF >> /etc/docker/daemon.json
-      #     {
-      #       "features": {
-      #         "containerd-snapshotter": true
-      #       },
-      #       "storage-driver": "stargz"
-      #     }
-      #     EOF'
+          sudo cat /etc/docker/daemon.json
+          sudo bash -c 'cat << EOF >> /etc/docker/daemon.json
+          {
+            "features": {
+              "containerd-snapshotter": true
+            },
+            "storage-driver": "stargz"
+          }
+          EOF'
 
-      #     sudo cat /etc/docker/daemon.json
+          sudo cat /etc/docker/daemon.json
 
-      # -
-      #   name: install + restart services
-      #   run: |
-      #     sudo apt-get install fuse
-      #     sudo modprobe fuse
-      #     sudo wget https://github.com/containerd/stargz-snapshotter/releases/download/v0.15.1/stargz-snapshotter-v0.15.1-linux-amd64.tar.gz
-      #     sudo tar -C /usr/local/bin -xvf stargz-snapshotter-v0.15.1-linux-amd64.tar.gz containerd-stargz-grpc ctr-remote
-      #     sudo wget -O /etc/systemd/system/stargz-snapshotter.service https://raw.githubusercontent.com/containerd/stargz-snapshotter/v0.15.1/script/config/etc/systemd/system/stargz-snapshotter.service
-      #     sudo systemctl enable --now stargz-snapshotter
-      #     sudo systemctl restart containerd || true
-      #     sudo systemctl status containerd.service
-      #     sudo journalctl -xeu containerd.service
-      #     sudo systemctl restart docker
+      -
+        name: install + restart services
+        run: |
+          sudo apt-get install fuse
+          sudo modprobe fuse
+          sudo wget https://github.com/containerd/stargz-snapshotter/releases/download/v0.15.1/stargz-snapshotter-v0.15.1-linux-amd64.tar.gz
+          sudo tar -C /usr/local/bin -xvf stargz-snapshotter-v0.15.1-linux-amd64.tar.gz containerd-stargz-grpc ctr-remote
+          sudo wget -O /etc/systemd/system/stargz-snapshotter.service https://raw.githubusercontent.com/containerd/stargz-snapshotter/v0.15.1/script/config/etc/systemd/system/stargz-snapshotter.service
+          sudo systemctl enable --now stargz-snapshotter
+          sudo systemctl restart containerd || true
+          sudo systemctl status containerd.service
+          sudo journalctl -xeu containerd.service
+          sudo systemctl restart docker
 
-      #     sudo systemctl status stargz-snapshotter
-      #     sudo systemctl status containerd
-      #     sudo systemctl status docker
-      #     exit 1
+          sudo systemctl status stargz-snapshotter
+          sudo systemctl status containerd
+          sudo systemctl status docker
       -
         name: env info
         run: |
@@ -83,5 +82,6 @@ jobs:
           docker buildx inspect --bootstrap lazy-builder
           docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
           docker run --rm hello-esgz uname -a
+
 
 
