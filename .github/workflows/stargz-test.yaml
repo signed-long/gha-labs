@@ -74,6 +74,7 @@ jobs:
         name: build/pull normal image
         run: |
           docker buildx build --pull -t hello-org -f Dockerfile.stargz_org .
+          docker run hello-org
 
       -
         name: build/pull stargz image
@@ -81,5 +82,6 @@ jobs:
           docker buildx create --use --name lazy-builder --buildkitd-flags '--oci-worker-snapshotter=stargz'
           docker buildx inspect --bootstrap lazy-builder
           docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
+          docker run hello-esgz
 
 
