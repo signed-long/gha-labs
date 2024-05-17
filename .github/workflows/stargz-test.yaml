@@ -55,14 +55,15 @@ jobs:
           sudo tar -C /usr/local/bin -xvf stargz-snapshotter-v0.15.1-linux-amd64.tar.gz containerd-stargz-grpc ctr-remote
           sudo wget -O /etc/systemd/system/stargz-snapshotter.service https://raw.githubusercontent.com/containerd/stargz-snapshotter/v0.15.1/script/config/etc/systemd/system/stargz-snapshotter.service
           sudo systemctl enable --now stargz-snapshotter
-          sudo systemctl restart containerd || true
-          sudo systemctl status containerd.service
-          sudo journalctl -xeu containerd.service
-          sudo systemctl restart docker
+          exit 1
+          # sudo systemctl restart containerd || true
+          # sudo systemctl status containerd.service
+          # sudo journalctl -xeu containerd.service
+          # sudo systemctl restart docker
 
-          sudo systemctl status stargz-snapshotter
-          sudo systemctl status containerd
-          sudo systemctl status docker
+          # sudo systemctl status stargz-snapshotter
+          # sudo systemctl status containerd
+          # sudo systemctl status docker
       -
         name: env info
         run: |
@@ -82,6 +83,7 @@ jobs:
           docker buildx inspect --bootstrap lazy-builder
           docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
           docker run --rm hello-esgz uname -a
+
 
 
 
