@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Do I need this? https://github.com/containerd/stargz-snapshotter/blob/main/docs/INSTALL.md
       # -
       #   name: update containerd config file
       #   run: |
@@ -62,6 +64,12 @@ jobs:
       #     sudo systemctl status containerd
       #     sudo systemctl status docker
       #     exit 1
+      -
+        name: env info
+        run: |
+          containerd --version
+          docker --version
+          docker buildx version
       -
         name: build/pull normal image
         run: |
