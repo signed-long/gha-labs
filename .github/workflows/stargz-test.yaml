@@ -1,4 +1,4 @@
-name: containerd
+name: stargz-test
 
 on:
   push:
