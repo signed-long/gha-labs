@@ -65,8 +65,10 @@ jobs:
           sudo cat /etc/containerd/config.toml
 
           sudo cat /etc/docker/daemon.json
-          sudo bash -c 'cat << EOF >> /etc/docker/daemon.json
+          sudo bash -c 'cat << EOF > /etc/docker/daemon.json
           {
+            "exec-opts": ["native.cgroupdriver=cgroupfs"],
+            "cgroup-parent": "/actions_job",
             "features": {
               "containerd-snapshotter": true
             },
