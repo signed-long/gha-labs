@@ -6,13 +6,21 @@ on:
       - main
 
 jobs:
+  normal-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        name: build/pull normal image
+        run: |
+          # docker buildx build --pull -t hello-org -f Dockerfile.stargz_org .
+          docker run --rm ghcr.io/commaai/openpilot-base:latest uname -a
+          
   stargz-test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
-      # Do I need this? https://github.com/containerd/stargz-snapshotter/blob/main/docs/INSTALL.md
       -
         name: update containerd config file
         run: |
@@ -108,11 +116,6 @@ jobs:
           containerd --version
           docker --version
           docker buildx version
-      -
-        name: build/pull normal image
-        run: |
-          # docker buildx build --pull -t hello-org -f Dockerfile.stargz_org .
-          docker run --rm ghcr.io/stargz-containers/wordpress:5.9.2-org uname -a
 
       -
         name: build/pull stargz image
@@ -120,7 +123,7 @@ jobs:
           docker buildx create --use --name lazy-builder --buildkitd-flags '--oci-worker-snapshotter=stargz'
           # docker buildx inspect --bootstrap lazy-builder
           # docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
-          docker run --rm ghcr.io/stargz-containers/wordpress:5.9.2-esgz uname -a
+          docker run --rm ghcr.io/signed-long/openpilot-base:esgz uname -a
 
 
 
