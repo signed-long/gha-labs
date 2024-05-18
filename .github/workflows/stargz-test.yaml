@@ -95,8 +95,11 @@ jobs:
       -
         name: containerd logs
         run: |
-          sudo systemctl status containerd.service
           sudo journalctl -xeu containerd.service
+      -
+        name: docker logs
+        run: |
+          sudo journalctl -xeu docker.service
       -
         name: env info
         run: |
@@ -116,6 +119,7 @@ jobs:
           docker buildx inspect --bootstrap lazy-builder
           docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
           docker run --rm hello-esgz uname -a
+
 
 
 
