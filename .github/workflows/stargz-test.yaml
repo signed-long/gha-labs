@@ -88,14 +88,14 @@ jobs:
           sudo systemctl enable --now stargz-snapshotter
           sudo systemctl restart containerd
           sudo systemctl restart docker
-
-          sudo systemctl status stargz-snapshotter
-          sudo systemctl status containerd
-          sudo systemctl status docker
       -
-        name: logs
+        name: containerd status
         run: |
-          # sudo systemctl status containerd.service
+          sudo systemctl status containerd.service
+      -
+        name: containerd logs
+        run: |
+          sudo systemctl status containerd.service
           sudo journalctl -xeu containerd.service
       -
         name: env info
@@ -116,7 +116,6 @@ jobs:
           docker buildx inspect --bootstrap lazy-builder
           docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
           docker run --rm hello-esgz uname -a
-
 
 
 
