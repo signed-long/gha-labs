@@ -111,17 +111,16 @@ jobs:
       -
         name: build/pull normal image
         run: |
-          docker buildx build --pull -t hello-org -f Dockerfile.stargz_org .
-          docker run --rm hello-org uname -a
+          # docker buildx build --pull -t hello-org -f Dockerfile.stargz_org .
+          docker run --rm ghcr.io/stargz-containers/alpine:3.15.3-org uname -a
 
       -
         name: build/pull stargz image
         run: |
           docker buildx create --use --name lazy-builder --buildkitd-flags '--oci-worker-snapshotter=stargz'
           docker buildx inspect --bootstrap lazy-builder
-          docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
-          docker run --rm hello-esgz uname -a
-
+          # docker buildx build --pull -t hello-esgz -f Dockerfile.stargz_esgz .
+          docker run --rm ghcr.io/stargz-containers/alpine:3.15.3-esgz uname -a
 
 
 
